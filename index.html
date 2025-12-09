@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GMP+ Audit App Manual | User Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gmp-purple: #6B3FA0;
+            --gmp-purple-dark: #4a2b70;
+            --gmp-purple-light: #f3eef8;
+            --gmp-green: #7cb342;
+            --text-primary: #2d2d2d;
+            --text-secondary: #666;
+            --border-color: #e0e0e0;
+            --warning-bg: #fff3cd;
+            --warning-border: #ffc107;
+            --danger-bg: #f8d7da;
+            --danger-border: #dc3545;
+            --info-bg: #cce5ff;
+            --info-border: #004085;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: #fafafa;
+        }
+
+        /* Header */
+        .header {
+            background: var(--gmp-purple);
+            color: white;
+            padding: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .header-meta {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Navigation */
+        .nav-container {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 80px;
+            z-index: 99;
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0.75rem 2rem;
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            color: var(--gmp-purple);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .nav a:hover {
+            background: var(--gmp-purple-light);
+        }
+
+        /* Main content */
+        .main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Sections */
+        section {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            color: var(--gmp-purple);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--gmp-purple-light);
+        }
+
+        h3 {
+            color: var(--text-primary);
+            font-size: 1.15rem;
+            margin: 1.5rem 0 1rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Screenshots */
+        .screenshot-container {
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .screenshot {
+            max-width: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .screenshot:hover {
+            transform: scale(1.02);
+        }
+
+        .screenshot-caption {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        /* Alert boxes */
+        .alert {
+            padding: 1rem 1.25rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            border-left: 4px solid;
+        }
+
+        .alert-warning {
+            background: var(--warning-bg);
+            border-color: var(--warning-border);
+        }
+
+        .alert-danger {
+            background: var(--danger-bg);
+            border-color: var(--danger-border);
+        }
+
+        .alert-info {
+            background: var(--info-bg);
+            border-color: var(--info-border);
+        }
+
+        .alert strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Steps */
+        .steps {
+            counter-reset: step;
+            list-style: none;
+            margin-left: 0;
+            padding-left: 0;
+        }
+
+        .steps li {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .steps li::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2rem;
+            height: 2rem;
+            background: var(--gmp-purple);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        /* Table of views */
+        .views-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .views-table th,
+        .views-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .views-table th {
+            background: var(--gmp-purple-light);
+            color: var(--gmp-purple);
+            font-weight: 600;
+        }
+
+        .views-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        /* Video embed */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-link {
+            margin: 1.5rem 0;
+            max-width: 75%;
+        }
+
+        .video-thumbnail {
+            display: block;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Modal for screenshots */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        .modal img {
+            max-width: 95%;
+            max-height: 95%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 4px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--gmp-purple-dark);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .footer p {
+            color: rgba(255,255,255,0.8);
+            margin: 0;
+        }
+
+        /* Back to top */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--gmp-purple);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .back-to-top:hover {
+            transform: scale(1.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1.5rem 1rem;
+            }
+
+            .nav {
+                padding: 0.5rem 1rem;
+            }
+
+            .main {
+                padding: 1rem;
+            }
+
+            section {
+                padding: 1.5rem;
+            }
+
+            .nav-container {
+                position: relative;
+                top: 0;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            .header, .nav-container, .back-to-top, .footer {
+                display: none;
+            }
+
+            section {
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header" id="top">
+        <div class="header-content">
+            <h1>📋 GMP+ Audit App Manual</h1>
+            <div class="header-meta">Version 10.1 | December 2025</div>
+        </div>
+    </header>
+
+    <div class="nav-container">
+        <nav class="nav">
+            <a href="#introduction">Introduction</a>
+            <a href="#download">Download</a>
+            <a href="#login">Login</a>
+            <a href="#settings">Settings</a>
+            <a href="#personal">Personal Info</a>
+            <a href="#certification-body">Certification Body</a>
+            <a href="#audit">Audit</a>
+            <a href="#checklist">Checklist</a>
+            <a href="#non-conformities">Non-Conformities</a>
+            <a href="#reports">Reports</a>
+            <a href="#review">Review</a>
+            <a href="#documents">Documents</a>
+            <a href="#faq">FAQ</a>
+        </nav>
+    </div>
+
+    <main class="main">
+        <!-- Introduction -->
+        <section id="introduction">
+            <h2>📖 Introduction</h2>
+            <p>This manual contains information about the use of the <strong>GMP+ Audit app</strong>. The app can be used on laptop, tablet or mobile phone. Per device there may be some visual deviations from this manual, but functionality remains the same.</p>
+            
+            <div class="alert alert-info">
+                <strong>💡 Key Feature</strong>
+                The GMP+ Audit app is available for both online and offline usage!
+            </div>
+
+            <h3>GMP+ Database vs. GMP+ Audit App</h3>
+            <p>It's important to understand the difference between these two systems:</p>
+            
+            <table class="views-table">
+                <thead>
+                    <tr>
+                        <th>GMP+ Database</th>
+                        <th>GMP+ Audit App</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Application of new companies</td>
+                        <td>Overview of planned/performed audits</td>
+                    </tr>
+                    <tr>
+                        <td>Transfer certified companies to another CB</td>
+                        <td>Checklists per audit/review</td>
+                    </tr>
+                    <tr>
+                        <td>Adding/changing certificates or company details</td>
+                        <td>General Certification Body information</td>
+                    </tr>
+                    <tr>
+                        <td>Acceptation auditors (documentation)</td>
+                        <td>FSP Product list</td>
+                    </tr>
+                    <tr>
+                        <td>Consult exam results, overview companies</td>
+                        <td>Follow up on audits</td>
+                    </tr>
+                    <tr>
+                        <td>Planning of audits</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td><em>For coordinators & admin staff</em></td>
+                        <td><em>For auditors & reviewers only</em></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>In case of any questions, the GMP+ Helpdesk can be contacted. Consult the <a href="https://www.gmpplus.org" target="_blank">GMP+ website</a> for contact details.</p>
+        </section>
+
+        <!-- Download -->
+        <section id="download">
+            <h2>📥 Downloading the GMP+ Audit App</h2>
+            <p>The app can be downloaded on iOS, Android and Windows devices:</p>
+            
+            <ul>
+                <li><strong>iOS and/or Mac (Apple Silicon M1/M2/M3/M4+):</strong> <a href="https://apps.apple.com/app/resco-mobile-crm/id376630523" target="_blank">App Store</a></li>
+                <li><strong>Android:</strong> <a href="https://play.google.com/store/apps/details?id=net.resco.mobilecrm" target="_blank">Google Play Store</a></li>
+                <li><strong>Windows:</strong> <a href="https://rvd-gmpplus.github.io/resco-install/" target="_blank">Microsoft Store</a></li>
+                <!--<li><strong>Mac (Apple Silicon M1/M2/M3+):</strong> <a href="https://apps.apple.com/app/resco-mobile-crm/id376630523" target="_blank">App Store</a> (requires macOS 11.0 or later)</li>-->
+            </ul>
+        </section>
+
+        <!-- Login -->
+        <section id="login">
+            <h2>🔐 Login</h2>
+            <p>All auditors, inspectors and technical reviewers receive access to the app, managed by GMP+ International.</p>
+            
+            <ol class="steps">
+                <li>Download and install the Resco Mobile CRM app from your app store</li>
+                <li>Open the app and enter your login credentials (provided via email)</li>
+                <li>When using the app for the first time, you need to <strong>synchronize</strong> the system</li>
+                <li>After entering login details, click the button in the <strong>right upper corner</strong> to finalize the login</li>
+            </ol>
+
+            <div class="alert alert-info">
+                <strong>📧 First Login</strong>
+                Instructions regarding initial login can be found in a separate document attached to the email with your login details from GMP+ International.
+            </div>
+
+            <div class="screenshot-container">
+                <img src="images/slide-07-login-screen.png" alt="Login screen" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Login screen of the GMP+ Audit App</p>
+            </div>
+
+            <div class="screenshot-container">
+                <img src="images/slide-08-homepage.png" alt="Home page after login" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Home page after successful login</p>
+            </div>
+        </section>
+
+        <!-- Settings -->
+        <section id="settings">
+            <h2>⚙️ Settings & Updates</h2>
+            
+            <h3>Changing Language</h3>
+            <p>To change the app language:</p>
+            <ol class="steps">
+                <li>Go to <strong>Config</strong> on the home page</li>
+                <li>Click <strong>Setup</strong></li>
+                <li>Select your preferred language (English, German, or Dutch)</li>
+                <li>Save by clicking the button in the <strong>right upper corner</strong></li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="images/slide-09-language-settings.png" alt="Language settings" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Changing language in the settings</p>
+            </div>
+
+            <h3>Keeping the App Updated (Windows)</h3>
+            <p>To ensure compatibility with all GMP+ features:</p>
+            <ol class="steps">
+                <li>Open the <strong>Microsoft Store</strong></li>
+                <li>Click the dots in the right upper corner</li>
+                <li>Select <strong>"Downloads and updates"</strong></li>
+                <li>Click <strong>"Download updates"</strong></li>
+            </ol>
+
+            <div class="alert alert-warning">
+                <strong>⚠️ Version Requirement</strong>
+                Version 18.2.7.0 or higher is required for all GMP+ features. Check for updates every 6 months to ensure you have the latest version.
+            </div>
+
+            <div class="screenshot-container">
+                <img src="images/slide-10-windows-update-1.gif" alt="Windows update" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Checking for new version inside the Resco application</p>
+            </div>
+
+             <div class="screenshot-container">
+                <img src="images/update_win_store_apps.gif" alt="Windows update" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Checking for updates in Microsoft Store</p>
+            </div>
+
+            <h3>Synchronization</h3>
+            <p>When a sync icon appears on the home page, the app needs to be synchronized because an update is available. Click on the icon to synchronize.</p>
+
+            <div class="screenshot-container">
+                <img src="images/slide-11-sync-indicator.png" alt="Sync indicator" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Synchronization indicator on home page</p>
+            </div>
+        </section>
+
+        <!-- Personal Information -->
+        <section id="personal">
+            <h2>👤 Personal Information</h2>
+            <p>Personal information can be found by clicking on the <strong>'Personal'</strong> tab from the homepage.</p>
+            
+            <p>After clicking on your name, you will find:</p>
+            <ul>
+                <li>Overview of the Certification Bodies you work for</li>
+                <li>Overview of exams you passed including validity</li>
+                <li>Your acceptation status per scope</li>
+            </ul>
+
+            <div class="screenshot-container">
+                <img src="images/slide-12-personal-info.png" alt="Personal information" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Personal information overview</p>
+            </div>
+
+            <h3>Acceptation per Certification Body</h3>
+            <p>Click on the name of a Certification Body to see:</p>
+            <ul>
+                <li>Validity of your acceptation per scope</li>
+                <li>Detailed acceptation information</li>
+            </ul>
+
+            <div class="screenshot-container">
+                <img src="images/slide-13-cb-acceptation.png" alt="CB acceptation" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Acceptation details per Certification Body</p>
+            </div>
+
+            <h3>Changing Password</h3>
+            <div class="alert alert-danger">
+                <strong>⚠️ Warning</strong>
+                Only change your password when absolutely necessary. Incorrect password changes can block your app access!
+            </div>
+
+            <p>If you must change your password:</p>
+            <ol class="steps">
+                <li>Fill in the new password in the field <strong>'Resco Password'</strong></li>
+                <li>Click the save button (right upper corner)</li>
+                <li>Go back to the home page and synchronize the app</li>
+                <li>Go to <strong>Config → Setup</strong> and click on your username in the pop-up</li>
+                <li>Change the password in this screen as well</li>
+                <li>Synchronize the app again</li>
+            </ol>
+        </section>
+
+        <!-- Certification Body -->
+        <section id="certification-body">
+            <h2>🏢 Certification Body</h2>
+            <p>Information regarding your Certification Body and related audits can be found by clicking the <strong>'Certification Body'</strong> tab on the homepage.</p>
+
+            <ol class="steps">
+                <li>Click on <strong>'Certification Body'</strong></li>
+                <li>Enter the PIN code (provided by your GMP+ Coordinator)</li>
+                <li><strong>Do not press Enter</strong> after entering the PIN code</li>
+            </ol>
+
+            <div class="alert alert-info">
+                <strong>💡 Note</strong>
+                A Certification Body will only become visible when audits are assigned to you AND you are an accepted auditor for that Certification Body.
+            </div>
+
+            <div class="screenshot-container">
+                <img src="images/slide-14-15-certification-body.png" alt="Certification Body" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Certification Body access screen</p>
+            </div>
+        </section>
+
+        <!-- Audit -->
+        <section id="audit">
+            <h2>📝 Audit</h2>
+            <p>All audits and reviews assigned to you can be seen in the available views.</p>
+
+            <h3>Available Views</h3>
+            <table class="views-table">
+                <thead>
+                    <tr>
+                        <th>View</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>All Audits</strong></td>
+                        <td>All audits from the past 36 months and upcoming 6 months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Active Audits</strong></td>
+                        <td>Audits where action is needed</td>
+                    </tr>
+                    <tr>
+                        <td><strong>NC Follow-up Audits</strong></td>
+                        <td>Audits where only NC's need to be monitored</td>
+                    </tr>
+                    <tr>
+                        <td><strong>All Reviews</strong></td>
+                        <td>All reviews from the past 36 months and upcoming 6 months</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Active Reviews</strong></td>
+                        <td>Reviews where action is needed</td>
+                    </tr>
+                    <tr>
+                        <td><strong>NC Follow-up Reviews</strong></td>
+                        <td>Reviews where only NC's need to be monitored</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Use the search fields to search by <strong>registration number</strong> or <strong>company name</strong>.</p>
+
+            <div class="screenshot-container">
+                <img src="images/slide-14-15-certification-body.png" alt="Audit views" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Available audit views</p>
+            </div>
+
+            <h3>Company Information</h3>
+            <p>To view information about the company being audited:</p>
+            <ol class="steps">
+                <li>Open the audit</li>
+                <li>Click on the company name at the left side under <strong>'Company'</strong></li>
+            </ol>
+            <p>Here you'll find certification history, audit history, and company connections.</p>
+
+            <div class="screenshot-container">
+                <img src="images/slide-16-company-info.png" alt="Company information" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Company information view</p>
+            </div>
+
+            <h3>Audit Details</h3>
+            <p>General audit details can be entered at the left side of your screen. You can search for information in the checklist by entering the article number or any keyword.</p>
+
+            <div class="screenshot-container">
+                <img src="images/slide-17-audit-details.png" alt="Audit details" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Audit details entry screen</p>
+            </div>
+
+            <h3>Company Details Incorrect?</h3>
+            <div class="alert alert-warning">
+                <strong>⚠️ Important</strong>
+                Company details in the app are <strong>NOT editable</strong>Changes must be made via the GMP+ Database. If a scope is missing or incorrect, email GMP+ International.
+            </div>
+
+            <div class="screenshot-container">
+                <img src="images/slide-18-company-details-1.png" alt="Company details note" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Company details are read-only in the app</p>
+            </div>
+
+            <h3>Working with an Audit Team</h3>
+            <p>It is possible to audit with an audit team. During the creation of an audit in the GMP+ Database, multiple auditors can be assigned.</p>
+            <p>The role assignment is visible in the audit details on the left side of the screen. Each auditor sees which role they have (Lead or Co-auditor) and which categories they are responsible for.</p>
+
+            <div class="screenshot-container">
+                <img src="images/slide-21-audit-team.png" alt="Audit team" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Working with an audit team</p>
+            </div>
+        </section>
+
+        <!-- Checklist -->
+        <section id="checklist">
+            <h2>✅ Checklist</h2>
+            <p>The checklist shows all audit categories and questions.</p>
+
+            <h3>Category Colors</h3>
+            <ul>
+                <li><strong style="color: #c00;">Red categories</strong> = Mandatory (must be assessed)</li>
+                <li><strong>Black categories</strong> = Not applicable or optional</li>
+            </ul>
+
+            <div class="screenshot-container">
+                <img src="images/slide-19-checklist.png" alt="Checklist categories" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Checklist with category colors</p>
+            </div>
+
+            <h3>Searching the Checklist</h3>
+            <p>You can search within the checklist using:</p>
+            <ul>
+                <li>Article number</li>
+                <li>GMP+ module name</li>
+                <li>Keywords within questions</li>
+            </ul>
+            
+            <p>To see all questions, change the view to <strong>"All audit questions"</strong> (button above the checklist).</p>
+
+            <div class="screenshot-container">
+                <img src="images/slide-20-checklist-search.png" alt="Checklist search" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Searching within the checklist</p>
+            </div>
+
+            <h3>Answering Questions</h3>
+            <p>When multiple auditors work on an audit, each auditor answers questions in their assigned category only.</p>
+            
+            <h3>Marking Categories</h3>
+            <p>You can set the compliance status per category (Conform/Not Conform). Open a category to view and assess all individual items.</p>
+
+            <div class="screenshot-container">
+                <img src="images/slide-25-category-marking.png" alt="Category marking" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Marking category compliance</p>
+            </div>
+
+            <h3>Using Expand and Collapse</h3>
+            <p>Use the <strong>Expand</strong> feature to view all items within a category. The <strong>Collapse</strong> feature helps you navigate back after marking items as non-conform.</p>
+
+            <div class="screenshot-container">
+                <img src="images/slide-27-expand-collapse.png" alt="Expand collapse" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Using expand and collapse in the checklist</p>
+            </div>
+        </section>
+
+        <!-- Non-Conformities -->
+        <section id="non-conformities">
+            <h2>❌ Non-Conformities (NC)</h2>
+
+            <h3>Adding a Non-Conformity</h3>
+            <p>When creating an NC, the following fields are <strong>mandatory</strong>:</p>
+            <ul>
+                <li><strong>Compliance</strong> (classification)</li>
+                <li><strong>Deadline NCR</strong></li>
+                <li><strong>Description of the Non-Conformity</strong></li>
+            </ul>
+
+            <p><strong>Motivation auditor</strong> = Explain why the company does not comply with GMP+ rules and justify your classification choice.</p>
+
+            <div class="alert alert-info">
+                <strong>💡 New Feature: Article Number</strong>
+                You can now specify the exact article number for an NC. For example, if the checklist shows article 8.4, but the NC applies to article 8.4.1, you can enter "8.4.1" in the 'Article number NC' field.
+            </div>
+
+            <div class="screenshot-container">
+                <img src="images/slide-30-adding-nc.png" alt="Adding NC" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Adding a Non-Conformity</p>
+            </div>
+
+            <h3>Deleting a Non-Conformity</h3>
+            <p>An NC can only be deleted when:</p>
+            <ul>
+                <li>The NC was incorrectly entered</li>
+                <li>The audit is <strong>not yet finished</strong> (Audit Ready = 'No')</li>
+            </ul>
+
+            <div class="screenshot-container">
+                <img src="images/slide-31-deleting-nc.png" alt="Deleting NC" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Deleting a Non-Conformity</p>
+            </div>
+
+            <h3>Closing a Non-Conformity</h3>
+            <p>To close an NC, fill in these fields:</p>
+            <ul>
+                <li><strong>NCR solved on</strong> (date)</li>
+                <li><strong>Final classification</strong></li>
+                <li><strong>Corrective/preventive actions</strong></li>
+            </ul>
+
+            <h3>Previous NC's</h3>
+            <p>If an NC from a previous audit (same scope) was not closed, it will appear in the new audit checklist under <strong>"Non-conformities Previous Audit"</strong>.</p>
+
+            <p>You have three options:</p>
+            <table class="views-table">
+                <thead>
+                    <tr>
+                        <th>Option</th>
+                        <th>Description</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Close</strong></td>
+                        <td>NC is resolved, final classification is 'conform'</td>
+                        <td>NC is closed</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ignore</strong></td>
+                        <td>NC will not be assessed during this audit</td>
+                        <td>NC appears in next audit (same scope)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Up-/Downgrade</strong></td>
+                        <td>NC cannot be closed but needs reclassification</td>
+                        <td>New classification applies to next audit</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="alert alert-danger">
+                <strong>⚠️ Warning: Ignore is Permanent</strong>
+                Once you set 'Ignore NC' to 'Yes', this cannot be changed back to 'No'!
+            </div>
+
+            <div class="screenshot-container">
+                <img src="images/slide-29-screenshot.png" alt="Previous NCs" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Handling previous Non-Conformities</p>
+            </div>
+
+            <h3>Up- or Downgrading an NC</h3>
+            <p>When up- or downgrading a previous NC:</p>
+            <ol class="steps">
+                <li>Set <strong>'Ignore NC'</strong> to <strong>'No'</strong></li>
+                <li><strong>Do NOT fill in</strong> 'NCR solved on' and 'Final classification'</li>
+                <li>Select <strong>'Downgrade / Upgrade'</strong></li>
+                <li>Fill in the required fields (shown in red)</li>
+                <li>Save and return to the checklist</li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="images/slide-35-updowngrade-nc-1.png" alt="Up/downgrade NC" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Up- or downgrading a Non-Conformity</p>
+            </div>
+        </section>
+
+        <!-- Reports -->
+        <section id="reports">
+            <h2>📄 Reports</h2>
+            <p>When the audit is finished, you can generate reports <strong>without internet connection</strong>!</p>
+
+            <h3>Generating Reports</h3>
+            <ol class="steps">
+                <li>Click the button in the <strong>right upper corner</strong> of the audit</li>
+                <li>Select the applicable report in your preferred language</li>
+                <li>Choose the format: <strong>PDF</strong> or <strong>Word</strong></li>
+                <li>Click the button in the right upper corner to open the report</li>
+            </ol>
+
+            <div class="alert alert-info">
+                <strong>💡 Saving Reports</strong>
+                You can export reports to your device or save them in the app. Reports will appear in the GMP+ Database only after synchronization.
+            </div>
+
+            <div class="alert alert-warning">
+                <strong>⚠️ Note</strong>
+                NC reports are <B>not applicable</B> for inspections of GMP+ TS 3.3.
+            </div>
+
+            <div class="screenshot-container">
+                <img src="images/slide-36-reports.png" alt="Reports" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Generating audit reports</p>
+            </div>
+
+            <h3>Video Demonstration</h3>
+            <p>Watch this video to see how to generate and export reports:</p>
+            <div class="video-link">
+                <a href="https://www.youtube.com/watch?v=e0TMTRI4zLQ" target="_blank" rel="noopener noreferrer" class="video-thumbnail">
+                    <img src="https://img.youtube.com/vi/e0TMTRI4zLQ/maxresdefault.jpg" alt="GMP+ Audit App Reports Demo" onerror="this.src='https://img.youtube.com/vi/e0TMTRI4zLQ/hqdefault.jpg'">
+                    <span class="play-button">▶</span>
+                    <span class="video-caption">🎬 Click to watch on YouTube: GMP+ Audit App - Report Generation Demo</span>
+                </a>
+            </div>
+
+
+            <h3>Finalizing the Audit</h3>
+            <p>When you have completed the audit and answered all questions:</p>
+            <ol class="steps">
+                <li>Select <strong>'Yes'</strong> for <strong>'Audit Ready'</strong></li>
+                <li>The audit data becomes <strong>read-only</strong></li>
+            </ol>
+
+            <div class="alert alert-warning">
+                <strong>⚠️ Important</strong>
+                Once 'Audit Ready' is set to 'Yes', data can no longer be changed! Only the reviewer can set the status back to 'Not Approved'. If no reviewer is assigned, 'Audit Ready' can be changed back to 'No' by the auditor.
+            </div>
+
+            <div class="screenshot-container">
+                <img src="images/slide-38-audit-ready.png" alt="Audit ready" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Setting Audit Ready status</p>
+            </div>
+        </section>
+
+        <!-- Review -->
+        <section id="review">
+            <h2>🔍 Review Process</h2>
+            <p>When the auditor marks an audit as ready, the reviewer will see the review request in their app.</p>
+
+            <h3>Reviewer Capabilities</h3>
+            <ul>
+                <li><strong>Cannot</strong> change audit details</li>
+                <li><strong>Can</strong> add remarks in the 'Comments' field (left side of audit checklist)</li>
+                <li>Must select <strong>'Approved'</strong> or <strong>'Not Approved'</strong> when done</li>
+            </ul>
+
+            <div class="screenshot-container">
+                <img src="images/slide-39-review-instructions.png" alt="Review process" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Review instructions for reviewers</p>
+            </div>
+
+            <h3>Audit and Review Workflow</h3>
+            <p>The complete workflow shows which actions are performed in which system:</p>
+
+            <div class="screenshot-container">
+                <img src="images/slide-41-workflow-diagram.png" alt="Workflow diagram" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Complete audit and review workflow</p>
+            </div>
+
+            <h3>After Processing</h3>
+            <p>When an audit status becomes <strong>"Processed – NC closed"</strong> or <strong>"Processed Conform"</strong>:</p>
+            <ul>
+                <li>Audit questions and answers are <strong>no longer visible</strong> in the app</li>
+                <li>This is done to speed up synchronization</li>
+                <li>Complete audit data can be found in saved reports</li>
+            </ul>
+
+            <p>If reports aren't saved locally, they can be generated via the GMP+ Database by someone with database access. After generation and sync, reports will appear in the app.</p>
+        </section>
+
+        <!-- Documents -->
+        <section id="documents">
+            <h2>📁 Documents</h2>
+            <p>Click on <strong>'Documents'</strong> in the app to find direct links to:</p>
+            <ul>
+                <li>FSP Product list</li>
+                <li>Registration forms for certified laboratories</li>
+                <li>Registration forms for registered laboratories</li>
+                <li>Guidance on how to register analysis results in the GMP+ Monitoring database</li>
+            </ul>
+
+            <div class="screenshot-container">
+                <img src="images/slide-43-documents.png" alt="Documents" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Documents section in the app</p>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq">
+            <h2>❓ Frequently Asked Questions</h2>
+
+            <h3>Q: I cannot see any data in the NC report for Transport or Antibiotic free feed. Why?</h3>
+            <p>Non-conformities for these scopes are not classified in minor, major or critical. All data is shown in the <strong>audit report</strong> instead. This can be signed by the shipper/company after the audit.</p>
+
+            <h3>Q: What should I do when the app is blocked?</h3>
+            <div class="alert alert-danger">
+                <strong>⚠️ Critical Warning</strong>
+                Only follow these instructions if your app was synchronized the last time you used it! Otherwise, unsynchronized data will be deleted! If the app was not synchronized, contact GMP+ International first.
+            </div>
+
+            <p><strong>Windows 10/11:</strong></p>
+            <ol class="steps">
+                <li>Delete the app from your device</li>
+                <li>Reinstall from the Microsoft Store</li>
+                <li>Follow the login instructions provided</li>
+            </ol>
+
+            <p>To verify your username and password, ask GMP+ International to resend your credentials.</p>
+
+            <h3>Q: The app keeps giving errors / I cannot see (all) my audits</h3>
+            <p>When experiencing errors, you can try to delete the app data:</p>
+
+            <div class="alert alert-warning">
+                <strong>⚠️ Warning</strong>
+                Information that is not successfully synchronized will be deleted!
+            </div>
+
+            <ol class="steps">
+                <li>Navigate to <strong>Config → Setup</strong></li>
+                <li>Select <strong>'Delete data'</strong></li>
+                <li>Synchronize the app again (this is an initial sync and may take some time)</li>
+            </ol>
+
+            <h3>Q: How do I send a log file to GMP+ International?</h3>
+            <ol class="steps">
+                <li>Navigate to <strong>Config → About</strong></li>
+                <li>Click the icon in the right upper corner</li>
+                <li>This prepares an email with the log file</li>
+                <li><strong>Include your email address in the subject line</strong> before sending</li>
+            </ol>
+
+            <div class="alert alert-info">
+                <strong>💡 Important</strong>
+                Without your email address in the subject, GMP+ International won't know who sent the log file!
+            </div>
+
+            <div class="screenshot-container">
+                <img src="images/slide-45-faq-logfile-1.png" alt="Log file" class="screenshot" onclick="openModal(this)">
+                <p class="screenshot-caption">Sending log files and checking app version</p>
+            </div>
+
+            <h3>Q: How do I check the app version?</h3>
+            <p>Navigate to <strong>Config → About</strong>. The version number is displayed in the pop-up window.</p>
+        </section>
+
+        <!-- Resources -->
+        <section id="resources">
+            <h2>🔗 Additional Resources</h2>
+            <ul>
+                <li><a href="https://www.gmpplus.org" target="_blank">GMP+ International Website</a></li>
+                <li><a href="https://app.gmpplus.org" target="_blank">GMP+ Platform</a></li>
+                <li><a href="https://www.youtube.com/watch?v=e0TMTRI4zLQ" target="_blank">Video: Report Generation Demo</a></li>
+            </ul>
+
+            <p>For support, contact the GMP+ Helpdesk via the contact details on the GMP+ website.</p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>GMP+ Audit App Manual | Version 10.0 | © GMP+ International</p>
+        <p>Last updated: January 2024</p>
+    </footer>
+
+    <a href="#top" class="back-to-top" title="Back to top">↑</a>
+
+    <!-- Modal for enlarged screenshots -->
+    <div class="modal" id="imageModal" onclick="closeModal()">
+        <span class="modal-close">&times;</span>
+        <img id="modalImage" src="" alt="">
+    </div>
+
+    <script>
+        // Modal functionality
+        function openModal(img) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modal.style.display = 'block';
+            modalImg.src = img.src;
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
